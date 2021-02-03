@@ -12,7 +12,12 @@ import { VisualEditor } from "@/packages/visual-editor";
 export default defineComponent({
   name: "App",
   components: {
-    VisualEditor,
+    VisualEditor
+  },
+  data() {
+    return {
+      val: "",
+    };
   },
 });
 </script>
