@@ -1,0 +1,65 @@
+$headSize: 60px;
+$menuSize: 275px;
+$operatorSize: 275px;
+
+$bic: #dcdfe6;
+$ibl: #ebeef5;
+$itc: #314659;
+$icc: rgba(0,0,0,0.45);
+$boxShadowColor: #f0f1f2;
+
+$primary: #409eff;
+   
+.visual-editor{
+  position: fixed;
+  left: 20px;
+  right: 20px;
+  top: 20px;
+  bottom: 20px;
+  background-color: white;
+  &::before{
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.1);
+    content: '';
+  }
+  .visual-editor-menu{
+    position: absolute;
+    width: $menuSize;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #ffffff;
+  }
+  .visual-editor-head{
+    position: absolute;
+    left: $menuSize;
+    right: $operatorSize;
+    height: $headSize;
+    background-color: #409eff;
+  }
+  .visual-editor-operator{
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: $operatorSize;
+    background-color: #314659;
+  }
+  .visual-editor-body{
+    padding-top: $headSize;
+    padding-left: $menuSize;
+    padding-right: $operatorSize;
+    box-sizing: border-box;
+    background-color: skyblue;
+    height: 100%;
+    .visual-editor-content{
+      height: 100%;
+      width: 100%;
+      overflow: auto;
+    }
+  }
+}
