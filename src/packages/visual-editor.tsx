@@ -1,18 +1,31 @@
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 import "./visual-editor.scss";
 import { VisualEditorModelValue } from "@/packages/visual-editor.utils";
-
+import { useModel } from "./utils/useModel";
+import { VisualEditorBlock } from "./visual-editor-block";
 
 export const VisualEditor = defineComponent({
   props: {
     modelValue: {
-      type:  Object as PropType<VisualEditorModelValue>
-    }
+      type: Object as PropType<VisualEditorModelValue>,
+      required: true,
+    },
   },
   emits: {
-    'update:modelValue':(val?: VisualEditorModelValue) => true
+    "update:modelValue": (val?: VisualEditorModelValue) => true,
   },
-  setup(props) {
+  setup(props, ctx) {
+    const dataModel = useModel(
+      () => props.modelValue,
+      (val) => ctx.emit("update:modelValue", val)
+    );
+    console.log("dataModel", dataModel);
+
+    const containerStyles = computed(() => ({
+      width: `${dataModel.value.container.width}px`,
+      height: `${dataModel.value.container.height}px`,
+    }));
+
     return () => (
       <div class="visual-editor">
         <div class="visual-editor-menu">visual-editor-menu</div>
@@ -20,7 +33,11 @@ export const VisualEditor = defineComponent({
         <div class="visual-editor-operator">visual-editor-operator</div>
         <div class="visual-editor-body">
           <div class="visual-editor-content">
-          visual-editor-content
+            <div class="visual-editor-container" style={containerStyles.value}>
+              {(dataModel.value?.blocks || []).map((block, index) => (
+                <VisualEditorBlock block={block} key={index} />
+              ))}
+            </div>
           </div>
         </div>
       </div>

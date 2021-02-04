@@ -21,20 +21,20 @@ export function useModel<T>(getter: () => T, emitter: (val: T) => void) {
 }
 
 
-export const TestUseModel = defineComponent({
-  props: {
-    modelValue: {type: String},
-  },
-  emit: {
-    'update:modelValue':(val?: string) => true 
-  },
-  setup(props, ctx) {
-    const model = useModel(() => props.modelValue, val => ctx.emit('update:modelValue', val));
-    return () => (
-      <div>
-        自定义的输入框
-        <input type="text" v-model={model.value}/>
-      </div>
-    )
-  }
-})
+// export const TestUseModel = defineComponent({
+//   props: {
+//     modelValue: {type: String},
+//   },
+//   emit: {
+//     'update:modelValue':(val?: string) => true 
+//   },
+//   setup(props, ctx) {
+//     const model = useModel(() => props.modelValue, val => ctx.emit('update:modelValue', val));
+//     return () => (
+//       <div>
+//         自定义的输入框
+//         <input type="text" v-model={model.value}/>
+//       </div>
+//     )
+//   }
+// })
