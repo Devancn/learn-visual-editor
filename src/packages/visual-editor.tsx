@@ -36,6 +36,18 @@ export const VisualEditor = defineComponent({
       height: `${dataModel.value.container.height}px`,
     }));
 
+    const focusData = computed(() => {
+      let focus: VisualEditorBlockData[] = [];
+      let unFocus: VisualEditorBlockData[] = [];
+      dataModel.value.blocks.forEach((block) =>
+        block.focus ? focus.push(block) : unFocus.push(block)
+      );
+      return {
+        focus, // 选中的block
+        unFocus, // 未选中的block
+      };
+    });
+
     const methods = {
       clearFocus: (block?: VisualEditorBlockData) => {
         let blocks = dataModel.value.blocks;
@@ -128,15 +140,58 @@ export const VisualEditor = defineComponent({
             e.preventDefault();
             e.stopPropagation();
             if (e.shiftKey) {
-              block.focus = !block.focus;
+              if(focusData.value.focus.length <= 1) {
+                block.focus = true
+              } else {
+                block.focus = !block.focus
+              }
             } else {
-              block.focus = true;
-              methods.clearFocus(block);
+              if(!block.focus) {
+                block.focus = true;
+                methods.clearFocus(block);
+              }
             }
+            blockDraggier().mousedown(e);
           },
         },
       };
     })();
+
+    const blockDraggier = () => {
+      let dragState = {
+        startX: 0,
+        startY: 0,
+        startPos: [] as { left: number; top: number }[],
+      };
+      const mousedown = (e: MouseEvent) => {
+        dragState = {
+          startX: e.clientX,
+          startY: e.clientY,
+          startPos: focusData.value.focus.map(({ top, left }) => ({
+            top,
+            left,
+          })),
+        };
+        document.addEventListener("mousemove", mousemove);
+        document.addEventListener("mouseup", mouseup);
+      };
+
+      const mousemove = (e: MouseEvent) => {
+        const durX = e.clientX - dragState.startX;
+        const durY = e.clientY - dragState.startY;
+        focusData.value.focus.forEach((block, index) => {
+          block.top = dragState.startPos[index].top + durY;
+          block.left = dragState.startPos[index].left + durX;
+        });
+      };
+
+      const mouseup = () => {
+        document.removeEventListener("mousemove", mousemove);
+        document.removeEventListener("mouseup", mouseup);
+      };
+
+      return { mousedown };
+    };
 
     return () => (
       <div class="visual-editor">
