@@ -1,7 +1,10 @@
 <template>
   <div class="app">
     <h1>这个是页面内容</h1>
-    <VisualEditor v-model="jsonData" :config="visualConfig"/>
+    <VisualEditor
+      v-model="jsonData"
+      :config="visualConfig"
+    />
   </div>
 </template>
 
@@ -27,10 +30,12 @@ export default defineComponent({
           {
             top: 100,
             left: 100,
+            componentKey: "button",
           },
           {
             top: 200,
             left: 200,
+            componentKey: "input",
           },
         ],
       },
