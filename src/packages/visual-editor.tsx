@@ -34,60 +34,69 @@ export const VisualEditor = defineComponent({
       height: `${dataModel.value.container.height}px`,
     }));
 
-    const menuDraggier = {
-      current: {
-        component: null as null | VisualEditorComponent,
-      },
-      dragstart: (e: DragEvent, component: VisualEditorComponent) => {
-        containerRef.value.addEventListener(
-          "dragenter",
-          menuDraggier.dragenter
-        );
-        containerRef.value.addEventListener("dragover", menuDraggier.dragover);
-        containerRef.value.addEventListener(
-          "dragleave",
-          menuDraggier.dragleave
-        );
-        containerRef.value.addEventListener("drop", menuDraggier.drop);
-        menuDraggier.current.component = component;
-      },
-      dragenter: (e: DragEvent) => {
-        e.dataTransfer!.dropEffect;
-      },
-      dragover: (e: DragEvent) => {
-        e.preventDefault();
-      },
-      dragleave: (e: DragEvent) => {
-        e.dataTransfer!.dropEffect = "none";
-      },
-      dragend: () => {
-        containerRef.value.removeEventListener(
-          "dragenter",
-          menuDraggier.dragenter
-        );
-        containerRef.value.removeEventListener(
-          "dragover",
-          menuDraggier.dragover
-        );
-        containerRef.value.removeEventListener(
-          "dragleave",
-          menuDraggier.dragleave
-        );
-        containerRef.value.removeEventListener("drop", menuDraggier.drop);
-        menuDraggier.current.component = null;
-      },
-      drop: (e: DragEvent) => {
-        const blocks = dataModel.value.blocks || [];
-        blocks.push({
-          top: e.offsetY,
-          left: e.offsetX,
-        });
-        dataModel.value = {
-          ...dataModel.value,
-          blocks
-        };
-      },
-    };
+    const menuDraggier = (() => {
+      let component = null as null | VisualEditorComponent;
+
+      const blockHandler = {
+        dragstart: (e: DragEvent, current: VisualEditorComponent) => {
+          containerRef.value.addEventListener(
+            "dragenter",
+            containerHandler.dragenter
+          );
+          containerRef.value.addEventListener(
+            "dragover",
+            containerHandler.dragover
+          );
+          containerRef.value.addEventListener(
+            "dragleave",
+            containerHandler.dragleave
+          );
+          containerRef.value.addEventListener("drop", containerHandler.drop);
+          component = current;
+        },
+        dragend: () => {
+          containerRef.value.removeEventListener(
+            "dragenter",
+            containerHandler.dragenter
+          );
+          containerRef.value.removeEventListener(
+            "dragover",
+            containerHandler.dragover
+          );
+          containerRef.value.removeEventListener(
+            "dragleave",
+            containerHandler.dragleave
+          );
+          containerRef.value.removeEventListener("drop", containerHandler.drop);
+          component = null;
+        },
+      };
+
+      const containerHandler = {
+        dragenter: (e: DragEvent) => {
+          e.dataTransfer!.dropEffect = "move";
+        },
+        dragover: (e: DragEvent) => {
+          e.preventDefault();
+        },
+        dragleave: (e: DragEvent) => {
+          e.dataTransfer!.dropEffect = "none";
+        },
+        drop: (e: DragEvent) => {
+          const blocks = dataModel.value.blocks || [];
+          blocks.push({
+            top: e.offsetY,
+            left: e.offsetX,
+          });
+          dataModel.value = {
+            ...dataModel.value,
+            blocks,
+          };
+        },
+      };
+
+      return blockHandler;
+    })();
 
     return () => (
       <div class="visual-editor">
