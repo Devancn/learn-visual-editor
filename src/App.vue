@@ -27,6 +27,12 @@ export default defineComponent({
           width: 800,
         },
         blocks: [
+           {
+            top: 200,
+            left: 100,
+            componentKey: "text",
+            focus: true,
+          },
           {
             top: 100,
             left: 100,
