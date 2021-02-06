@@ -3,7 +3,8 @@ export interface VisualEditorBlockData {
   componentKey: string,
   top: number,
   left: number,
-  adjustPosition: boolean    // 是否调整位置
+  adjustPosition: boolean,    // 是否调整位置
+  focus: boolean
 }
 
 export interface VisualEditorModelValue {
@@ -19,6 +20,24 @@ export interface VisualEditorComponent{
   label: string,
   preview: () => JSX.Element,
   render: () => JSX.Element
+}
+
+export function createNewBlock({
+  component,
+  left,
+  top
+}: {
+  component: VisualEditorComponent,
+  top: number,
+  left: number
+}): VisualEditorBlockData {
+  return {
+    adjustPosition: true,
+    top,
+    left,
+    componentKey: component!.key,
+    focus: false
+  }
 }
 
 export function createVisualEditorConfig() {

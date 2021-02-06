@@ -7,7 +7,15 @@ export const VisualEditorBlock = defineComponent({
     config: {type: Object as PropType<VisualEditorConfig>, required: true}
   },
   setup(props) {
-    const el = ref({} as HTMLDivElement)
+    const el = ref({} as HTMLDivElement);
+
+    const classes = computed(() => [
+      'visual-editor-block',
+      {
+        'visual-editor-block-focus': props.block.focus
+      }
+    ])
+
     const styles = computed(() => ({
       top: `${props.block.top}px`,
       left: `${props.block.left}px`
@@ -26,7 +34,7 @@ export const VisualEditorBlock = defineComponent({
     return () => {
       const component = props.config.componentMap[props.block.componentKey];
       const Render = component.render();
-      return <div class="visual-editor-block" ref={el} style={styles.value}>
+      return <div class={classes.value} ref={el} style={styles.value}>
         {Render}
     </div>
     }

@@ -1,6 +1,7 @@
 import { computed, defineComponent, PropType, ref } from "vue";
 import "./visual-editor.scss";
 import {
+  createNewBlock,
   VisualEditorComponent,
   VisualEditorConfig,
   VisualEditorModelValue,
@@ -84,12 +85,11 @@ export const VisualEditor = defineComponent({
         },
         drop: (e: DragEvent) => {
           const blocks = dataModel.value.blocks || [];
-          blocks.push({
-            adjustPosition: true,
+          blocks.push(createNewBlock({
+            component: component!,
             top: e.offsetY,
-            left: e.offsetX,
-            componentKey: component!.key,
-          });
+            left: e.offsetX
+          }));
           dataModel.value = {
             ...dataModel.value,
             blocks,

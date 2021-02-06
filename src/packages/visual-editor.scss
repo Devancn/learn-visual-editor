@@ -34,11 +34,11 @@ $primary: #409eff;
     bottom: 0;
     background-color: #ffffff;
     z-index: 9;
-    .visual-editor-menu-item{
+    .visual-editor-menu-item {
       position: relative;
       width: calc(100% - 20px);
       margin-left: 10px;
-      border:solid 3px $ibl;
+      border: solid 3px $ibl;
       margin-top: 20px;
       min-height: 120px;
       display: flex;
@@ -46,22 +46,22 @@ $primary: #409eff;
       justify-content: center;
       padding: 0 20px;
       box-sizing: border-box;
-      &::after{
+      &::after {
         position: absolute;
         left: 0;
         top: 0;
         right: 0;
         bottom: 0;
-        content: '';
+        content: "";
         z-index: 2;
       }
-      &:hover{
+      &:hover {
         border-color: $primary;
         cursor: move;
       }
 
-      .visual-editor-menu-item-label{
-        position:absolute;
+      .visual-editor-menu-item-label {
+        position: absolute;
         left: -3px;
         top: -3px;
         background-color: $primary;
@@ -105,9 +105,23 @@ $primary: #409eff;
         flex-shrink: 0;
         flex-grow: 0;
         position: relative;
-        
-        .visual-editor-block{
-          position:absolute;
+
+        .visual-editor-block {
+          position: absolute;
+          &::after {
+            $space: -3px;
+            position: absolute;
+            left: $space;
+            top: $space;
+            right: $space;
+            bottom: $space;
+            content: '';
+          }
+          &.visual-editor-block-focus {
+            &::after {
+              border: 1px $primary dashed;
+            }
+          }
         }
       }
     }
