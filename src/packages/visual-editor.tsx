@@ -9,6 +9,8 @@ import {
 } from "@/packages/visual-editor.utils";
 import { useModel } from "./utils/useModel";
 import { VisualEditorBlock } from "./visual-editor-block";
+import { useCommander } from "./plugins/command.plugin";
+import { useVisualCommand } from "./utils/visual.command";
 
 export const VisualEditor = defineComponent({
   props: {
@@ -140,13 +142,13 @@ export const VisualEditor = defineComponent({
             e.preventDefault();
             e.stopPropagation();
             if (e.shiftKey) {
-              if(focusData.value.focus.length <= 1) {
-                block.focus = true
+              if (focusData.value.focus.length <= 1) {
+                block.focus = true;
               } else {
-                block.focus = !block.focus
+                block.focus = !block.focus;
               }
             } else {
-              if(!block.focus) {
+              if (!block.focus) {
                 block.focus = true;
                 methods.clearFocus(block);
               }
@@ -193,6 +195,29 @@ export const VisualEditor = defineComponent({
       return { mousedown };
     };
 
+    const commander = useVisualCommand();
+
+    const buttons = [
+      {
+        label: "撤销",
+        icon: "icon-back",
+        handler: commander.undo,
+        tip: "ctrl+z",
+      },
+      {
+        label: "重做",
+        icon: "icon-forward",
+        handler: commander.redo,
+        tip: "ctrl+y, ctrl+shift+z",
+      },
+      {
+        label: "删除",
+        icon: "icon-delete",
+        handler: () => commander.delete(),
+        tip: "ctrl+d, backspace, delete",
+      },
+    ];
+
     return () => (
       <div class="visual-editor">
         <div class="visual-editor-menu">
@@ -203,6 +228,7 @@ export const VisualEditor = defineComponent({
               onDragend={menuDraggier.dragend}
               onDragstart={(e) => menuDraggier.dragstart(e, component)}
             >
+            
               <span class="visual-editor-menu-item-label">
                 {component.label}
               </span>
@@ -210,7 +236,12 @@ export const VisualEditor = defineComponent({
             </div>
           ))}
         </div>
-        <div class="visual-editor-head">visual-editor-head</div>
+        <div class="visual-editor-head">
+          {buttons.map((btn, index: number) => <div key={index} class="visual-editor-head-button">
+            <i class={`iconfont ${btn.icon}`}/>
+            <span>{btn.label}</span>
+          </div>)}
+        </div>
         <div class="visual-editor-operator">visual-editor-operator</div>
         <div class="visual-editor-body">
           <div class="visual-editor-content">
