@@ -9,7 +9,6 @@ import {
 } from "@/packages/visual-editor.utils";
 import { useModel } from "./utils/useModel";
 import { VisualEditorBlock } from "./visual-editor-block";
-import { useCommander } from "./plugins/command.plugin";
 import { useVisualCommand } from "./utils/visual.command";
 
 export const VisualEditor = defineComponent({
@@ -58,6 +57,12 @@ export const VisualEditor = defineComponent({
           blocks = blocks.filter((item) => item !== block);
         }
         blocks.forEach((block) => (block.focus = false));
+      },
+      updateBlocks: (blocks: VisualEditorBlockData[]) => {
+        dataModel.value = {
+          ...dataModel.value,
+          blocks
+        };
       },
     };
 
@@ -195,7 +200,11 @@ export const VisualEditor = defineComponent({
       return { mousedown };
     };
 
-    const commander = useVisualCommand();
+    const commander = useVisualCommand({
+      focusData,
+      updateBlocks: methods.updateBlocks,
+      dataModel
+    });
 
     const buttons = [
       {
@@ -228,7 +237,6 @@ export const VisualEditor = defineComponent({
               onDragend={menuDraggier.dragend}
               onDragstart={(e) => menuDraggier.dragstart(e, component)}
             >
-            
               <span class="visual-editor-menu-item-label">
                 {component.label}
               </span>
@@ -237,10 +245,12 @@ export const VisualEditor = defineComponent({
           ))}
         </div>
         <div class="visual-editor-head">
-          {buttons.map((btn, index: number) => <div key={index} class="visual-editor-head-button">
-            <i class={`iconfont ${btn.icon}`}/>
-            <span>{btn.label}</span>
-          </div>)}
+          {buttons.map((btn, index: number) => (
+            <div key={index} class="visual-editor-head-button" onClick={btn.handler}>
+              <i class={`iconfont ${btn.icon}`} />
+              <span>{btn.label}</span>
+            </div>
+          ))}
         </div>
         <div class="visual-editor-operator">visual-editor-operator</div>
         <div class="visual-editor-body">
